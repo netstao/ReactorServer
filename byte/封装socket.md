@@ -1,5 +1,5 @@
 # 封装socket 
-`
+```
 /*
  * 程序名：demo7.cpp，此程序用于演示封装socket通讯的客户端
 */
@@ -126,4 +126,4 @@ int main(int argc,char *argv[])
 
     sleep(1);
   }
-}`
+}```
