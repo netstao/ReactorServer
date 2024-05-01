@@ -1,11 +1,13 @@
 #pragma once
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <errno.h>
-#include <unistd.h>
+#include <strings.h>
+#include <string.h>
 #include <sys/epoll.h>
 #include <vector>
+#include <unistd.h>
+
 
 //epoll 类
 

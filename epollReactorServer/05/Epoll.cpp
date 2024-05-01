@@ -20,10 +20,11 @@ class Epoll
 
 Epoll::Epoll()                           //构造函数创建epollfd_
 {
-    if(epollfd_=epoll_create(1)==-1)
+    epollfd_=epoll_create(1);
+    if(epollfd_==-1)
     {
         printf("epoll_create() failed(%d)\n",errno); 
-        perror("epoll_create() failed");exit(-1);
+        perror("epoll_create() failed perror");exit(-1);
     }
 }
 Epoll::~Epoll()
@@ -37,9 +38,12 @@ void Epoll::addfd(int fd, uint32_t op)   //把fd和它需要监听的事件添�
     ev.data.fd=fd;       // 指定事件的自定义数据，会随着epoll_wait()返回的事件一并返回。
     ev.events=op;      // 让epoll监视listenfd的读事件，采用水平触发。
 
+    printf("epollfd_%d, %d \n", epollfd_, fd);
+
     if(epoll_ctl(epollfd_,EPOLL_CTL_ADD,fd,&ev) == -1)    // 把需要监视的listenfd和它的事件加入epollfd中。
     {
-        printf("epoll_ctl() failed(%d)\n",errno); exit(-1);
+        printf("epoll_ctl() failed(%d)\n",errno);
+         perror("epoll_ctl() failed perror");exit(-1);
     }
 }
 

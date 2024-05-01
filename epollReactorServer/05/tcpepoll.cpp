@@ -16,6 +16,7 @@
 #include "Socket.h"
 #include "Epoll.h"
 
+
 int main(int argc,char *argv[])
 {
     if (argc != 3) 
@@ -32,7 +33,7 @@ int main(int argc,char *argv[])
     servsock.setreuseport(true);
     servsock.settcpnodelay(true);
     servsock.bind(servaddr);
-    servsock.listen(128);
+    servsock.listen();
 
 
     /*
