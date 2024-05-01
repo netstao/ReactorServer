@@ -13,6 +13,8 @@
     1）主动断开的端在四次挥手后，socket的状态为TIME_WAIT，该状态将持续2MSL（30秒/1分钟/2分钟）。 MSL（Maximum Segment Lifetime）报文在网络上存在的最长时间，超过这个时间报文将被丢弃。
     2）如果是客户端主动断开，TIME_WAIT状态的socket几乎不会造成危害。a）客户端程序的socket很少，服务端程序的socket很多（成千上万）；b）客户端的端口是随机分配的，不存在重用的问题。
     3）如果是服务端主动断开，有两方面的危害：a）socket没有立即释放；b）端口号只能在2MSL后才能重用。
+    服务端主动关闭需要等待2MSL()后才能重用
     在服务端程序中，用setsockopt()函数设置socket的属性（一定要放在bind()之前）。
     int opt = 1;   
     setsockopt(m_listenfd,SOL_SOCKET,SO_REUSEADDR,&opt,sizeof(opt));
+
