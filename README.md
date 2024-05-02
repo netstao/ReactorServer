@@ -1,2 +1,2 @@
 # ReactorServer
-- c++百万并发Reactor模型, 基于Epoll
+- 基于Epoll的c++实现百万并发Reactor模型。 
