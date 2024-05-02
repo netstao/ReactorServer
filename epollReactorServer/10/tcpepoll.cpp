@@ -57,7 +57,7 @@ int main(int argc,char *argv[])
    //std::vector <epoll_event> evs;
 
 
-   Channel *servchannel = new Channel(eloop.ep(), servsock.fd());
+   Channel *servchannel = new Channel(&eloop, servsock.fd());
 
    servchannel->setreadcallback(std::bind(&Channel::newconnection, servchannel,&servsock));
    servchannel->enablereading();

@@ -1,6 +1,8 @@
 #include "EventLoop.h"
 #include "Channel.h"
 
+class Channel;
+
 EventLoop::EventLoop():ep_(new Epoll)
 {
 
@@ -31,4 +33,10 @@ void EventLoop::run()
 Epoll* EventLoop::ep()
 {
     return ep_;
+}
+
+void EventLoop::updateChannel(Channel *ch)
+{
+    ep_->updateChannel(ch);
+
 }
