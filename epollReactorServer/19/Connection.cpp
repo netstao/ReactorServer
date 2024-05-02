@@ -5,7 +5,7 @@ Connection::Connection(EventLoop *eloop, Socket *clientsock):eloop_(eloop),clien
 {
    
     clientchannel_ = new Channel(eloop_, clientsock_->fd());
-    clientchannel_->setreadcallback(std::bind(&Channel::onmessage,clientchannel_));
+    clientchannel_->setreadcallback(std::bind(&Connection::onmessage,this));
     clientchannel_->setclosecallback(std::bind(&Connection::closecallback,this));
     clientchannel_->seterrorcallback(std::bind(&Connection::errorcallback,this));
     clientchannel_->useet();      //客服端新连接的fd 读事件采用边缘触发
@@ -71,8 +71,9 @@ void Connection::onmessage()  //处理对端发过来的消息
         if (nread > 0)      // 成功的读取到了数据。
         {
             // 把接收到的报文内容原封不动的发回去。
-            printf("recv(eventfd=%d):%s\n",fd(),buffer);
-            send(fd(),buffer,strlen(buffer),0);
+            // printf("recv(eventfd=%d):%s\n",fd(),buffer);
+            // send(fd(),buffer,strlen(buffer),0);
+            inputBuffer_.append(buffer, nread);  //把读取的数据放到接收缓冲区中。
         } 
         else if (nread == -1 && errno == EINTR) // 读取数据的时候被信号中断，继续读取。
         {  
@@ -80,13 +81,18 @@ void Connection::onmessage()  //处理对端发过来的消息
         } 
         else if (nread == -1 && ((errno == EAGAIN) || (errno == EWOULDBLOCK))) // 全部的数据已读取完毕。
         {
+            printf("recv(eventfd=%d):%s\n",fd(),inputBuffer_.data());
+            //这里可以解析相应的协议 比如http websocket 等等  然后 应用程序的数据的返回等等等
+            outputBuffer_ = inputBuffer_;
+            inputBuffer_.clear();   //清空readbuffer 缓冲区
+            send(fd(), outputBuffer_.data(), outputBuffer_.size(),0);
             break;
         } 
         else if (nread == 0)  // 客户端连接已断开。
         {  
             // printf("client(eventfd=%d) disconnected.\n",fd_);
             // close(fd_);            // 关闭客户端的fd。
-            cc();
+            closecallback();
             break;
         }
     }

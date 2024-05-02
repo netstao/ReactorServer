@@ -26,6 +26,7 @@ class Socket
         int fd() const;   //返回fd成员
         std::string ip() const;   //返回ip成员
         uint16_t port() const;   //返回port成员
+        void setipport(const std::string &ip, uint16_t port);
 
         void setreuseaddr(bool on);  //设置SO_REUSEADDR  地址重用选项
         void setreuseport(bool on);  //设置SO_REUSEPORT 端口可以快速重用选项

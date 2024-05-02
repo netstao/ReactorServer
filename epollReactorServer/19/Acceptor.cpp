@@ -36,6 +36,8 @@ void Acceptor::newconnection()  //处理新客服连接请求
     InetAddress clientaddr;             // 客户端的地址和协议。
     Socket *clientsock = new Socket(servsock_->accept(clientaddr));
 
+    clientsock->setipport(clientaddr.ip(), clientaddr.port());
+
     // printf ("accept client(fd=%d,ip=%s,port=%d) ok.\n",clientsock->fd(),clientaddr.ip(),clientaddr.port());
 
     newconnectioncb_(clientsock);

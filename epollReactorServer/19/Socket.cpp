@@ -72,14 +72,20 @@ int Socket::accept(InetAddress& clientAddr)    //服务器获取完成三次握�
 
     printf ("accept client(fd=%d,ip=%s,port=%d) ok.\n",clientfd,clientAddr.ip(),clientAddr.port());
 
-    ip_ = clientAddr.ip();
-    port_ = clientAddr.port();
+    // ip_ = clientAddr.ip();
+    // port_ = clientAddr.port();
+    setipport(clientAddr.ip(), clientAddr.port());
 
     return clientfd;
 
 }
 
 
+void Socket::setipport(const std::string &ip, uint16_t port)
+{
+    ip_=ip;
+    port_=port;
+}
 
 
 void Socket::settcpnodelay(bool on)
