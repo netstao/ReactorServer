@@ -36,16 +36,29 @@ uint16_t Connection::port() const                  // 返回客户端的port。
 
 void Connection::closecallback()       //tcp连接断开回调 拱Channel类回调
 {
-    printf("closecallback client(eventfd=%d) disconnected.\n",fd());
-    close(fd());            // 关闭客户端的fd。
+    closecallback_(this);
+    // printf("closecallback client(eventfd=%d) disconnected.\n",fd());
+    // close(fd());            // 关闭客户端的fd。
 }
 
 void Connection::errorcallback()       //tcp连接发生错误 回调 供Channel类回调
 {
-    printf("errorcallback client(eventfd=%d) error.\n",fd());
-    close(fd());            // 关闭客户端的fd。
+    errorcallback_(this);
+    // printf("errorcallback client(eventfd=%d) error.\n",fd());
+    // close(fd());            // 关闭客户端的fd。
 
 }
+
+void Connection::setclosecallback( std::function<void(Connection*)> fn)      //tcp连接断开回调 拱Channel类回调
+{
+    closecallback_=fn;
+}
+
+void Connection::seterrorcallback( std::function<void(Connection*)> fn)       //tcp连接发生错误 回调 供Channel类回调
+{
+    errorcallback_=fn;
+}
+
 
 
 

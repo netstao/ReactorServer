@@ -20,6 +20,8 @@ public:
     ~TcpServer();
     void start(); //启动
     void newconnection(Socket* clientsock); //新连接
+    void closeconnection(Connection *conn); //断开新连接
+    void errorconnection(Connection *conn); //错误新连接
 };
 
 

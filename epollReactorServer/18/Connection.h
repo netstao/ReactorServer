@@ -13,6 +13,9 @@ private:
     Socket *clientsock_;     //客户端连接fd socket
     Channel *clientchannel_; //connection 客服端fd对应的channel 
 
+    std::function<void(Connection*)> closecallback_;  //关闭fd回调， 将调用TcpServer::closeconnection
+    std::function<void(Connection*)> errorcallback_;  //关闭fd回调， 将调用TcpServer::errorconnection
+
 public:
     Connection(EventLoop *eloop, Socket *clientsock);
     ~Connection();
@@ -23,4 +26,9 @@ public:
 
     void closecallback();       //tcp连接断开回调 拱Channel类回调
     void errorcallback();       //tcp连接发生错误 回调 供Channel类回调
+
+    void setclosecallback( std::function<void(Connection*)> fn);       //tcp连接断开回调 
+    void seterrorcallback( std::function<void(Connection*)> fn);       //tcp连接发生错误 
+
+    
 };
