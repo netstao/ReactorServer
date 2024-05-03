@@ -1,0 +1,6 @@
+channel 封装了监听fd和客户端连接的fd
+监听fd 和客服端连接的fd生命周期不同 功能也不一样
+
+在Channel类型在做一层封装
+服务端监听的fd 封装成Acceptor类
+客服端fd封装成 封装成Connection类
