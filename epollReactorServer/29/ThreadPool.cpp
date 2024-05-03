@@ -109,19 +109,19 @@ void fun(std::shared_ptr<AA> aa)
     aa->show();
 }
 
-int main()
-{
-    ThreadPool tp(2,"TEST");
+// int main()
+// {
+//     ThreadPool tp(2,"TEST");
 
-    {
-        std::shared_ptr<AA> aa(new AA);
-        tp.addtask(std::bind(fun,aa));
-    }
+//     {
+//         std::shared_ptr<AA> aa(new AA);
+//         tp.addtask(std::bind(fun,aa));
+//     }
 
-    sleep(10);   // 让线程有时间可以运行。
+//     sleep(10);   // 让线程有时间可以运行。
 
-    return 0;
-}
+//     return 0;
+// }
 //////////////////////////////////////////////////////////////////
 
 

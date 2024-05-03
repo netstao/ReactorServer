@@ -21,52 +21,43 @@ void EchoServer::start()
     tcpserver_.start();
 }
 
-void EchoServer::HandleNewConnection(Connection* conn) //新连接
+void EchoServer::HandleNewConnection(spConnection conn) //新连接
 {
     // printf("HandleNewConnection thread is %ld.\n", syscall(SYS_gettid));
     std::cout<< "new connection come in." << std::endl;
 }
 
-void EchoServer::HandleCloseConnection(Connection *conn) //断开新连接
+void EchoServer::HandleCloseConnection(spConnection conn) //断开新连接
 {
     //  printf("HandleCloseConnection thread is %ld.\n", syscall(SYS_gettid));
     std::cout<< "EchoServer connection close." << std::endl;
 }
 
-void EchoServer::HandleErrorConnection(Connection *conn) //错误新连接
+void EchoServer::HandleErrorConnection(spConnection conn) //错误新连接
 {
     std::cout<< "EchoServer connection error." << std::endl;
 }
 
-void EchoServer::HandleOnMessage(Connection *conn, std::string &message) //处理客户端的请求报文，在TcpServer类中回调此函数。
+void EchoServer::HandleOnMessage(spConnection conn, std::string &message) //处理客户端的请求报文，在TcpServer类中回调此函数。
 {
     // printf("HandleOnMessage thread is %ld.\n", syscall(SYS_gettid));
     std::cout<< "EchoServer OnMessage." << std::endl;
-    //这里可以解析相应的协议 比如http websocket 等等  然后 应用程序的数据的返回等等等
-    // outputBuffer_ = inputBuffer_;
-    /*message="reply:" +message;
-    int len = message.size();       //计算报文大小
-    std::string tmpbuf((char *)&len,4);  //把报文长度放到头部4个字节
-    tmpbuf.append(message);
-    */
-    // inputBuffer_.clear();   //清空readbuffer 缓冲区
-    //send(conn->fd(), tmpbuf.data(), tmpbuf.size(),0);
-    // conn->send(message.data(),message.size());
 
     //把业务添加到工作线程池当中
     workthreadpool_.addtask(std::bind(&EchoServer::OnMessage,this,conn,message));
     // OnMessage(conn, message);
 }
 
-void EchoServer::OnMessage(Connection *conn, std::string &message)
+void EchoServer::OnMessage(spConnection conn, std::string &message)
 {
     message="reply:" +message;
     sleep(2);
+   
+    conn->send(message.data(),message.size());  //数据发送出去 可能是野指针 用了智能指针。
     printf("处理完业务后， 将使用connection对象 \n");
-    conn->send(message.data(),message.size());  //数据发送出去 可能是野指针。
 }
 
-void EchoServer::HandleSendComplete(Connection *conn)  //数据发送完成后，在TcpServer 回调此函数
+void EchoServer::HandleSendComplete(spConnection conn)  //数据发送完成后，在TcpServer 回调此函数
 {
     std::cout<< "EchoServer Send Done." << std::endl;
 }

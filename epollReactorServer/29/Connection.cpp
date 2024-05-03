@@ -38,30 +38,30 @@ uint16_t Connection::port() const                  // 返回客户端的port。
 
 void Connection::closecallback()       //tcp连接断开回调 拱Channel类回调
 {
-    closecallback_(this);
+    closecallback_(shared_from_this());
     // printf("closecallback client(eventfd=%d) disconnected.\n",fd());
     // close(fd());            // 关闭客户端的fd。
 }
 
 void Connection::errorcallback()       //tcp连接发生错误 回调 供Channel类回调
 {
-    errorcallback_(this);
+    errorcallback_(shared_from_this());
     // printf("errorcallback client(eventfd=%d) error.\n",fd());
     // close(fd());            // 关闭客户端的fd。
 
 }
 
-void Connection::setclosecallback( std::function<void(Connection*)> fn)      //tcp连接断开回调 拱Channel类回调
+void Connection::setclosecallback( std::function<void(spConnection)> fn)      //tcp连接断开回调 拱Channel类回调
 {
     closecallback_=fn;
 }
 
-void Connection::seterrorcallback( std::function<void(Connection*)> fn)       //tcp连接发生错误 回调 供Channel类回调
+void Connection::seterrorcallback( std::function<void(spConnection)> fn)       //tcp连接发生错误 回调 供Channel类回调
 {
     errorcallback_=fn;
 }
 
-void Connection::setonmessagecallback(std::function<void(Connection*, std::string&)> fn)
+void Connection::setonmessagecallback(std::function<void(spConnection, std::string&)> fn)
 {
     onmessagecallback_=fn;
 }
@@ -101,7 +101,7 @@ void Connection::onmessage()  //处理对端发过来的消息
                 inputBuffer_.erase(0, len+4);
                 printf("recv(eventfd=%d):%s\n",fd(),message.c_str());
 
-                onmessagecallback_(this, message);  //回调TcpServer类中 onmessage
+                onmessagecallback_(shared_from_this(), message);  //回调TcpServer类中 onmessage
            
             }
             break;
@@ -131,11 +131,11 @@ void Connection::writecallback()
     if(outputBuffer_.size() ==0)
     {
         clientchannel_->disablewriteing();
-        sendcompletecallback_(this);
+        sendcompletecallback_(shared_from_this());
     }
 }
 
-void Connection::setsendcompletecallback( std::function<void(Connection*)> fn)
+void Connection::setsendcompletecallback( std::function<void(spConnection)> fn)
 {
     sendcompletecallback_ = fn;
 }
