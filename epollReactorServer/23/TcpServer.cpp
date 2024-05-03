@@ -35,13 +35,13 @@ void TcpServer::start()
     //  printf ("new client connection (fd=%d,ip=%s,port=%d) ok.\n",conn->fd(),conn->ip().c_str(),conn->port());
      conns_[conn->fd()] = conn;
 
-     newconnectioncb_(conn);
+     if(newconnectioncb_) newconnectioncb_(conn);
 
  }
 
 void TcpServer::closeconnection(Connection *conn) //断开新连接
 {
-    closeconnectioncb_(conn);
+    if(closeconnectioncb_) closeconnectioncb_(conn);
     // printf("closeconnection client(eventfd=%d) disconnected.\n",conn->fd());
     // close(conn->fd());            // 关闭客户端的fd。
     conns_.erase(conn->fd());
@@ -50,7 +50,7 @@ void TcpServer::closeconnection(Connection *conn) //断开新连接
 
 void TcpServer::errorconnection(Connection *conn) //错误新连接
 {
-    errorconnectioncb_(conn);
+    if(errorconnectioncb_) errorconnectioncb_(conn);
     //  printf("errorconnection client(eventfd=%d) error.\n",conn->fd());
     // close(conn->fd());            // 关闭客户端的fd。
     conns_.erase(conn->fd());
@@ -71,49 +71,49 @@ tmpbuf.append(message);
 //send(conn->fd(), tmpbuf.data(), tmpbuf.size(),0);
 conn->send(tmpbuf.data(),tmpbuf.size());
 */
-    onmessagecb_(conn, message);
+    if(onmessagecb_) onmessagecb_(conn, message);
 
 }
 
 void TcpServer::sendcomplete(Connection *conn)
 {
 // printf("send done \n");
-    sendcompletecb_(conn);
+    if(sendcompletecb_) sendcompletecb_(conn);
 }
 
 void TcpServer::epolltimeout(EventLoop *eloop)
 {
 // printf("TcpServer epoll_wait() timeout. \n");
-    timeoutcb_(eloop);
+    if(timeoutcb_) timeoutcb_(eloop);
 //根据业务的需求可以增加其他代码
 }
 
 void TcpServer::setnewconnectioncb(std::function<void(Connection*)> fn)
 {
-    if(newconnectioncb_) newconnectioncb_=fn;    
+    newconnectioncb_=fn;    
 }
 
 void TcpServer::setcloseconnectioncb(std::function<void(Connection*)> fn)
 {
-    if(closeconnectioncb_) closeconnectioncb_=fn;    
+    closeconnectioncb_=fn;    
 }
 
 void TcpServer::seterrorconnectioncb(std::function<void(Connection*)> fn)
 {
-    if(errorconnectioncb_) errorconnectioncb_=fn;    
+    errorconnectioncb_=fn;    
 }
 
 void TcpServer::setonmessagecb(std::function<void(Connection*, std::string &message)> fn)
 {
-    if(onmessagecb_) onmessagecb_=fn;    
+    onmessagecb_=fn;    
 }
 
 void TcpServer::setsendcompletecb(std::function<void(Connection*)> fn)
 {
-    if(sendcompletecb_) sendcompletecb_=fn;    
+    sendcompletecb_=fn;    
 }   
 
 void TcpServer::settimeoutcb(std::function<void(EventLoop*)> fn)
 {
-    if(timeoutcb_) timeoutcb_=fn;    
+    timeoutcb_=fn;    
 }
