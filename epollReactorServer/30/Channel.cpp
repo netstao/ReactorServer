@@ -6,7 +6,7 @@
 
 
 
-Channel::Channel(EventLoop* eloop, int fd):eloop_(eloop), fd_(fd)
+Channel::Channel(std::unique_ptr<EventLoop> &eloop, int fd):eloop_(eloop), fd_(fd)
 {
     // printf("fd=%d, ep=%p", fd_, &ep);
 }
@@ -69,7 +69,7 @@ void Channel::handleevent()
 
     if (revents_ & EPOLLRDHUP)                     // 对方已关闭，有些系统检测不到，可以使用EPOLLIN，recv()返回0。
     {
-        printf("channel EPOLLRDHUP\n");
+        // printf("channel EPOLLRDHUP\n");
         // printf("client(eventfd=%d) disconnected.\n",fd_);
         // close(fd_);            // 关闭客户端的fd。
         // remove();    //从事件循环中删除channel
@@ -77,18 +77,18 @@ void Channel::handleevent()
     }                                //  普通数据  带外数据
     else if (revents_ & (EPOLLIN|EPOLLPRI))   // 接收缓冲区中有数据可以读。
     {
-        printf("channel EPOLLIN|EPOLLPRI\n");
+        // printf("channel EPOLLIN|EPOLLPRI\n");
         readcallback_();
     }
     else if (revents_ & EPOLLOUT)                  // 有数据需要写，暂时没有代码，以后再说。
     {
-        printf("channel EPOLLOUT\n");
+        // printf("channel EPOLLOUT\n");
         writecallback_();
         
     }
     else                                                                   // 其它事件，都视为错误。
     {
-        printf("channel errorcallback_\n");
+        // printf("channel errorcallback_\n");
         // printf("client(eventfd=%d) error.\n",fd_);
         // close(fd_);            // 关闭客户端的fd。
         // remove();  //从事件循环中删除channel

@@ -51,8 +51,6 @@ void EchoServer::HandleOnMessage(spConnection conn, std::string &message) //处�
 void EchoServer::OnMessage(spConnection conn, std::string &message)
 {
     message="reply:" +message;
-    sleep(2);
-   
     printf("处理完业务后， 将使用connection对象 \n");
     conn->send(message.data(),message.size());  //数据发送出去 可能是野指针 用了智能指针。
 }

@@ -1,10 +1,12 @@
 
 #include "Connection.h"
 
-Connection::Connection(EventLoop *eloop, Socket *clientsock):eloop_(eloop),clientsock_(clientsock),disconnect_(false)
+Connection::Connection(std::unique_ptr<EventLoop>& eloop, std::unique_ptr<Socket> clientsock)
+           :eloop_(eloop),clientsock_(std::move(clientsock)),disconnect_(false),
+           clientchannel_(new Channel(eloop_, clientsock_->fd()))
 {
    
-    clientchannel_ = new Channel(eloop_, clientsock_->fd());
+    // clientchannel_ = new Channel(eloop_, clientsock_->fd());
     clientchannel_->setreadcallback(std::bind(&Connection::onmessage,this));
     clientchannel_->setclosecallback(std::bind(&Connection::closecallback,this));
     clientchannel_->seterrorcallback(std::bind(&Connection::errorcallback,this));
@@ -16,8 +18,8 @@ Connection::Connection(EventLoop *eloop, Socket *clientsock):eloop_(eloop),clien
 
 Connection::~Connection()
 {
-    delete clientsock_;
-    delete clientchannel_;
+    // delete clientsock_;
+    // delete clientchannel_;
     printf("~Connections 对象释放");
 }
 

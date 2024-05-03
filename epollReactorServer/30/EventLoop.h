@@ -2,6 +2,7 @@
 #include "Epoll.h"
 #include "Channel.h"
 #include <functional>
+#include <memory>
 
 class Channel;
 class Epoll;
@@ -10,7 +11,7 @@ class EventLoop
 {
 private:
     /* data */
-    Epoll *ep_;
+    std::unique_ptr<Epoll> ep_;
     std::function<void(EventLoop*)> epolltimeoutcallback_;  //epoll_wait()超时的回调
 public:
     EventLoop();

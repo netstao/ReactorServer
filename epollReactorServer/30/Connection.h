@@ -17,9 +17,9 @@ class Connection:public std::enable_shared_from_this<Connection>
 {
 private:
     /* data */
-    EventLoop *eloop_ ;   //connection 对应的事件循环 在构造函数中传入.
-    Socket *clientsock_;     //客户端连接fd socket
-    Channel *clientchannel_; //connection 客服端fd对应的channel 
+    std::unique_ptr<EventLoop> &eloop_ ;   //connection 对应的事件循环 在构造函数中传入.
+    std::unique_ptr<Socket> clientsock_;     //客户端连接fd socket
+    std::unique_ptr<Channel> clientchannel_; //connection 客服端fd对应的channel 
     Buffer inputBuffer_;   //接收缓冲区
     Buffer outputBuffer_;  //输出发送缓冲区
     std::atomic_bool disconnect_;  //客服端是否已断开 断开设为true
@@ -31,7 +31,7 @@ private:
 
 
 public:
-    Connection(EventLoop *eloop, Socket *clientsock);
+    Connection(std::unique_ptr<EventLoop> &eloop_, std::unique_ptr<Socket> clientsock);
     ~Connection();
     
     int fd() const;                              // 返回客户端的fd。
