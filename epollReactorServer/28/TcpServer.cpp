@@ -8,14 +8,14 @@ TcpServer::TcpServer(const std::string &ip, const uint16_t port, int threadnum):
     acceptor_ = new Acceptor(maineloop_, ip, port);
     acceptor_->setnewconnectioncb(std::bind(&TcpServer::newconnection,this,std::placeholders::_1));
 
-    Threadpools_ = new ThreadPool(threadnum_);  //创建线程池
 
+    Threadepools_ = new ThreadPool(threadnum_,"IO");  //创建IO线程池
     //创建从事件循环。
     for(int i=0; i<threadnum_;i++)
     {
         subeloops_.push_back(new EventLoop);  //eventLoop 放入从线程循环容器其中 队列尾部
         subeloops_[i]->setepolltimeoutcallback(std::bind(&TcpServer::epolltimeout,this,std::placeholders::_1));
-        Threadpools_->addtask(std::bind(&EventLoop::run,subeloops_[i]));
+        Threadepools_->addtask(std::bind(&EventLoop::run,subeloops_[i]));
     }
 
 }
@@ -34,7 +34,7 @@ TcpServer::~TcpServer()
     {
         delete ss; // 释放子线程循环
     }
-    delete Threadpools_ //释放线程池
+    delete Threadepools_; //释放线程池
 }
 
 void TcpServer::start()

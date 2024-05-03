@@ -26,7 +26,7 @@ void Channel::useet()    //边缘触发模式
 {
     events_ = events_|EPOLLET;
 
-    printf("events_%d", events_);
+    // printf("events_%d", events_);
 
 }
 void Channel::enablereading()  //让epoll_wait()监视fd_的读事件

@@ -22,7 +22,7 @@ void EventLoop::run()
     {
        std::vector <Channel *> channels = ep_->loop(10*1000); //等待事件发生 成功发生事件 push到vector容器的尾部
 
-       //为空时是因为执行了epoll_wait()时超时 返回了空的channel
+       //为空时是因为执行了ep_->loop中的epoll_wait()超时了 返回了空的channel
        if(channels.size() == 0)
        {
             epolltimeoutcallback_(this);

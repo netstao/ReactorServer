@@ -13,9 +13,11 @@ private:
     /* data */
     EventLoop  *maineloop_;    //主线程循环
     std::vector<EventLoop*>  subeloops_;  //存放从事件循环的容器
+
     Acceptor *acceptor_; //一个Tcpserver 只有一个Acceptor对象
-    ThreadPool *Threadpools_;   //线程池对象 存放n个线程
-    int threadnum_;             //启动多个线程                                    
+    ThreadPool *Threadepools_;   //线程池对象 存放n个线程
+    int threadnum_;             //启动多个线程
+
     std::map<int,Connection *> conns_;  //一个tcpserver 有N多个Connection对象存放在map中
     std::function<void(Connection*)> newconnectioncb_;  //回调EchoServer::HandleNewConnection().
     std::function<void(Connection*)> closeconnectioncb_;  //回调EchoServer::HandleCloseConnection().
