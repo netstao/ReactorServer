@@ -48,7 +48,7 @@ int main(int argc,char *argv[])
   signal(SIGTERM,Stop);
   signal(SIGINT,Stop);
 
-  server = new EchoServer(argv[1],atoi(argv[2]),8,0);
+  server = new EchoServer(argv[1],atoi(argv[2]),32,0);
   server->start();
 
 
