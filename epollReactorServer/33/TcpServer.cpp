@@ -1,7 +1,7 @@
 #include "TcpServer.h"
 
 TcpServer::TcpServer(const std::string &ip, const uint16_t port, int threadnum)
-          :threadnum_(threadnum),maineloop_(new EventLoop),acceptor_(maineloop_.get(), ip, port)
+          :threadnum_(threadnum),maineloop_(new EventLoop(true)),acceptor_(maineloop_.get(), ip, port)
           ,Threadepools_(threadnum_,"IO")
 {
     // maineloop_=new EventLoop;
@@ -15,7 +15,7 @@ TcpServer::TcpServer(const std::string &ip, const uint16_t port, int threadnum)
     //创建从事件循环。
     for(int i=0; i<threadnum_;i++)
     {
-        subeloops_.emplace_back(new EventLoop);  //eventLoop 放入从线程循环容器其中 队列尾部
+        subeloops_.emplace_back(new EventLoop(false));  //eventLoop 放入从线程循环容器其中 队列尾部
         subeloops_[i]->setepolltimeoutcallback(std::bind(&TcpServer::epolltimeout,this,std::placeholders::_1));
         Threadepools_.addtask(std::bind(&EventLoop::run,subeloops_[i].get()));
     }

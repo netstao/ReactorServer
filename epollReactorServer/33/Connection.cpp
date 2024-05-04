@@ -105,7 +105,10 @@ void Connection::onmessage()  //处理对端发过来的消息
 
                 std::string message(inputBuffer_.data()+4, len); //从inputbuffer中获取一个报文
                 inputBuffer_.erase(0, len+4);
+
                 printf("recv(eventfd=%d):%s\n",fd(),message.c_str());
+                lastatime_ = Timestamp::now();   //获取时间戳
+                std::cout << "lastatime=" << lastatime_.tostring() << std::endl;
 
                 onmessagecallback_(shared_from_this(), message);  //回调TcpServer类中 onmessage
            
@@ -139,8 +142,8 @@ void Connection::send(const char *data, size_t size)  //发送数据
     else
     {
         printf("send() 不在io线程中\n");
-        printf("queueinloop after %s, size=%ld\n",data,size);
-        sendinloop(data, size);
+        printf("queueinloop send after %s, size=%ld\n",data,size);
+        // sendinloop(data, size);
         eloop_->queueinloop(std::bind(&Connection::sendinloop,this,data,size));
     }
     

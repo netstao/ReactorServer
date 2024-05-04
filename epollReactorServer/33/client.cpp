@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
     printf("connect ok.\n");
     // printf("开始时间：%d",time(0));
 
-    for (int ii=0;ii<2;ii++)
+    for (int ii=0;ii<10;ii++)
     {
         // 从命令行输入内容。
 
@@ -56,10 +56,10 @@ int main(int argc, char *argv[])
         { 
             printf("send write() failed.\n");  close(sockfd);  return -1;
         }
-    }
-    for (int ii=0;ii<2;ii++)
-    {
-        int len;
+    // }
+    // for (int ii=0;ii<2;ii++)
+    // {
+        // int len;
         recv(sockfd,&len,4,0);
 
         memset(buf,0,sizeof(buf));
@@ -70,6 +70,8 @@ int main(int argc, char *argv[])
         }
 
         printf("recv:%s\n",buf);
+        sleep(1);
     }
+    
     // printf("结束时间：%d",time(0));
 } 

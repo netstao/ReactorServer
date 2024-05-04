@@ -5,9 +5,10 @@
 #include <memory>
 #include <queue>
 #include <mutex>
-#include <mutex>
 #include <sys/syscall.h>
 #include <sys/eventfd.h>
+#include <unistd.h>
+#include <sys/timerfd.h>      // 定时器需要包含这个头文件。
 
 class Channel;
 class Epoll;
@@ -23,9 +24,12 @@ private:
     std::mutex mutex_;                              //任务队列同步的互斥锁
     int wakeupfd_;                                 //唤醒事件循环线程的eventfd 也就是io线程
     std::unique_ptr<Channel> wakechannel_;   //   eventfd channel
+    int timerfd_;                                //定时器的fd
+    std::unique_ptr<Channel> timerchannel_;     //定时器Channel
+    bool mainloop_;                             //true-是主事件循环，false-是从事件循环
 
 public:
-    EventLoop();
+    EventLoop(bool mainloop_);
     ~EventLoop();
 
     void run();
@@ -39,4 +43,6 @@ public:
     void queueinloop(std::function<void()> fn);  //把发送任务添加到任务队列
     void wakeup();  //唤醒事件循环
     void handlewakeup();  //事件循环被eventfd唤醒后执行的函数
+
+    void handletimer();   //  闹钟响应执行函数
 };

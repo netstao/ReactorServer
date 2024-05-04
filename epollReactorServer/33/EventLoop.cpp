@@ -1,16 +1,30 @@
 #include "EventLoop.h"
-#include "Channel.h"
-#include <unistd.h>
-#include <sys/syscall.h>
-
 
 class Channel;
 
-EventLoop::EventLoop()
-          :ep_(new Epoll),wakeupfd_(eventfd(0,EFD_NONBLOCK)),wakechannel_(new Channel(this,wakeupfd_))
+int createtimerfd(int sec=10)
+{
+    // 把定时器加入epoll。
+    int tfd=timerfd_create(CLOCK_MONOTONIC,TFD_CLOEXEC|TFD_NONBLOCK);   // 创建timerfd。
+    struct itimerspec timeout;                                // 定时时间的数据结构。
+    memset(&timeout,0,sizeof(struct itimerspec));
+    timeout.it_value.tv_sec = 5;                             // 定时时间为5秒。
+    timeout.it_value.tv_nsec = 0;
+    timerfd_settime(tfd,0,&timeout,0);                  // 开始计时。alarm(5)
+    return tfd;
+}
+
+EventLoop::EventLoop(bool mainloop)
+          :ep_(new Epoll),wakeupfd_(eventfd(0,EFD_NONBLOCK)),
+          mainloop_(mainloop),
+          wakechannel_(new Channel(this,wakeupfd_)),
+          timerfd_(createtimerfd()),timerchannel_(new Channel(this,timerfd_))
 {
     wakechannel_->setreadcallback(std::bind(&EventLoop::handlewakeup,this));
     wakechannel_->enablereading();
+
+    timerchannel_->setreadcallback(std::bind(&EventLoop::handletimer,this));
+    timerchannel_->enablereading();
 
 }
 
@@ -45,6 +59,26 @@ void EventLoop::run()
 // {
 //     return ep_;
 // }
+
+void EventLoop::handletimer()
+{
+   
+    struct itimerspec timeout;                                // 定时时间的数据结构。
+    memset(&timeout,0,sizeof(struct itimerspec));
+    timeout.it_value.tv_sec = 5;                             // 定时时间为5秒。
+    timeout.it_value.tv_nsec = 0;
+    timerfd_settime(timerfd_,0,&timeout,0);                  // 开始计时。alarm(5)
+
+     if(mainloop_)
+    {
+         printf("主事件闹钟时间到了。\n");
+    }
+    else
+    {
+         printf("从事件闹钟时间到了。\n");
+    }
+   
+}
 
 void EventLoop::wakeup()
 {

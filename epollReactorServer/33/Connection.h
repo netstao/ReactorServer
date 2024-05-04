@@ -5,6 +5,7 @@
 #include "Channel.h"
 #include "InetAddress.h"
 #include "Buffer.h"
+#include "Timestamp.h"
 #include <memory>
 #include <atomic>
 #include <sys/syscall.h>
@@ -28,6 +29,8 @@ private:
     std::function<void(spConnection)> errorcallback_;  //错误fd回调， 将调用TcpServer::errorconnection
     std::function<void(spConnection, std::string&)> onmessagecallback_;  //fd发生消息， 将调用TcpServer::onmessage()
     std::function<void(spConnection)> sendcompletecallback_;  //fd发送数据完成回调， 将调用TcpServer::sendcomplete()
+
+    Timestamp lastatime_;
 
 
 public:
