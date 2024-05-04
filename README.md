@@ -3,9 +3,10 @@
 # 压测
 - 30个客户端 每个客户端10万请求一共300万请求
 - 本次压测硬件小米笔记本14pro AMD Ryzen 7
+- 修改路径[epollReactorServer/37/](epollReactorServer/37/)
 ## 启动参数
     //参数分别对应ip,port,IO线程数,Work线程数
-    server = new EchoServer(argv[1],atoi(argv[2]),32,0);  //根目录下的server.cpp文件
+    server = new EchoServer(argv[1],atoi(argv[2]),32,0);  //根目录下的[server.cpp](epollReactorServer/37/server.cpp)文件
     
     ./server 127.0.0.1 9009  #服务端启动 IO线程线程数最好是CPU个数*2
 
