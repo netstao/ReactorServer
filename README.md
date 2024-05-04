@@ -4,8 +4,9 @@
     ./server 127.0.0.1 9009  #服务端启动
     ./btest.sh  #30个客户端 每个客户端10万请求300万请求
     
-# 第一次压测结果  虚拟机WSL 启动8个IO线程 8核心8G
-    300万请求 9秒内完成300万 平均每秒处理33.33万报文
+## 第一次压测结果  虚拟机WSL 启动8个IO线程 8核心8G
+- 300万请求 9秒内完成300万 平均每秒处理33.33万报文
+    
     2024-05-04 21:45:21 new connection fd=37,ip=127.0.0.1,port=51178, thread id is 2548.
     2024-05-04 21:45:21 new connection fd=38,ip=127.0.0.1,port=51180, thread id is 2548.
     2024-05-04 21:45:21 new connection fd=39,ip=127.0.0.1,port=51182, thread id is 2548.
@@ -66,10 +67,10 @@
     2024-05-04 21:45:30 connection close fd=61,ip=127.0.0.1,port=51226 is 2554.
     2024-05-04 21:45:30 connection close fd=53,ip=127.0.0.1,port=51210 is 2554.
     2024-05-04 21:45:30 connection close fd=45,ip=127.0.0.1,port=51194 is 2554.
-# 第二次压测结果  启动32个IO线程 8核心8G 
+## 第二次压测结果 虚拟机WSL启动32个IO线程 8核心8G
+- 300万请求 平均2.9秒内完成300万 平均每秒处理103.44万报文
     server = new EchoServer(argv[1],atoi(argv[2]),32,0);  //根目录server.cpp
 
-    300万请求 平均2.9秒内完成300万 平均每秒处理103.44万报文
     2024-05-04 22:13:31 new connection fd=107,ip=127.0.0.1,port=41212, thread id is 1502.
     2024-05-04 22:13:31 new connection fd=108,ip=127.0.0.1,port=41214, thread id is 1502.
     2024-05-04 22:13:31 new connection fd=109,ip=127.0.0.1,port=41216, thread id is 1502.
