@@ -1,10 +1,17 @@
 # ReactorServer
 - 基于Epoll事件，c++实现百万并发Reactor模型。
-# 压测 
-    ./server 127.0.0.1 9009  #服务端启动
+# 压测
+- 30个客户端 每个客户端10万请求一共300万请求
+- 本次压测硬件小米笔记本14pro AMD Ryzen 7
+
+    //参数分别对应ip,port,IO线程数,Work线程数
+    server = new EchoServer(argv[1],atoi(argv[2]),32,0);  //根目录下的server.cpp文件
+
+    ./server 127.0.0.1 9009  #服务端启动 IO线程线程数最好是CPU个数*2
+
     ./btest.sh  #30个客户端 每个客户端10万请求300万请求
     
-## 第一次压测结果  虚拟机WSL 启动8个IO线程 8核心8G
+## 第一次压测结果  虚拟机WSL 启动8个IO线程 16核心8G
     300万请求 9秒内完成300万 平均每秒处理33.33万报文
     
     2024-05-04 21:45:21 new connection fd=37,ip=127.0.0.1,port=51178, thread id is 2548.
@@ -68,8 +75,8 @@
     2024-05-04 21:45:30 connection close fd=53,ip=127.0.0.1,port=51210 is 2554.
     2024-05-04 21:45:30 connection close fd=45,ip=127.0.0.1,port=51194 is 2554.
     `
-## 第二次压测结果 虚拟机WSL启动32个IO线程 8核心8G
-    300万请求 平均2.9秒内完成300万 平均每秒处理103.44万报文
+## 第二次压测结果 虚拟机WSL启动32个IO线程 16核心8G
+    300万请求 平均2.9秒内完成300万 平均每秒处理103.44万报文 相较8个IO线程提升三倍
     server = new EchoServer(argv[1],atoi(argv[2]),32,0);  //根目录server.cpp
 
     2024-05-04 22:13:31 new connection fd=107,ip=127.0.0.1,port=41212, thread id is 1502.
@@ -132,4 +139,68 @@
     2024-05-04 22:13:35 connection close fd=116,ip=127.0.0.1,port=41230 is 1529.
     2024-05-04 22:13:35 connection close fd=134,ip=127.0.0.1,port=41266 is 1522.
     2024-05-04 22:13:35 connection close fd=130,ip=127.0.0.1,port=41258 is 1505.
-    
+## 第三次压测 虚拟机WSL启动64个IO线程 16核心8G
+    300万请求 对比32个IO线程并没有得到提升 可以得出结论 IO线程线程数最好是CPU个数*2
+    server = new EchoServer(argv[1],atoi(argv[2]),32,0);  //根目录server.cpp
+
+    2024-05-04 22:29:05 new connection fd=203,ip=127.0.0.1,port=41298, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=204,ip=127.0.0.1,port=41300, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=205,ip=127.0.0.1,port=41302, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=206,ip=127.0.0.1,port=41304, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=207,ip=127.0.0.1,port=41306, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=208,ip=127.0.0.1,port=41308, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=209,ip=127.0.0.1,port=41310, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=210,ip=127.0.0.1,port=41312, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=211,ip=127.0.0.1,port=41314, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=212,ip=127.0.0.1,port=41316, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=213,ip=127.0.0.1,port=41318, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=214,ip=127.0.0.1,port=41320, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=215,ip=127.0.0.1,port=41322, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=216,ip=127.0.0.1,port=41324, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=217,ip=127.0.0.1,port=41326, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=218,ip=127.0.0.1,port=41328, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=219,ip=127.0.0.1,port=41330, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=220,ip=127.0.0.1,port=41332, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=221,ip=127.0.0.1,port=41334, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=222,ip=127.0.0.1,port=41336, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=223,ip=127.0.0.1,port=41338, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=224,ip=127.0.0.1,port=41340, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=225,ip=127.0.0.1,port=41342, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=226,ip=127.0.0.1,port=41344, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=227,ip=127.0.0.1,port=41346, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=228,ip=127.0.0.1,port=41348, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=229,ip=127.0.0.1,port=41350, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=230,ip=127.0.0.1,port=41352, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=231,ip=127.0.0.1,port=41354, thread id is 21896.
+    2024-05-04 22:29:05 new connection fd=232,ip=127.0.0.1,port=41356, thread id is 21896.
+    2024-05-04 22:29:08 connection close fd=209,ip=127.0.0.1,port=41310 is 21916.
+    2024-05-04 22:29:08 connection close fd=203,ip=127.0.0.1,port=41298 is 21906.
+    2024-05-04 22:29:08 connection close fd=214,ip=127.0.0.1,port=41320 is 21922.
+    2024-05-04 22:29:08 connection close fd=215,ip=127.0.0.1,port=41322 is 21919.
+    2024-05-04 22:29:08 connection close fd=229,ip=127.0.0.1,port=41350 is 21938.
+    2024-05-04 22:29:09 connection close fd=206,ip=127.0.0.1,port=41304 is 21913.
+    2024-05-04 22:29:09 connection close fd=232,ip=127.0.0.1,port=41356 is 21936.
+    2024-05-04 22:29:09 connection close fd=205,ip=127.0.0.1,port=41302 is 21910.
+    2024-05-04 22:29:09 connection close fd=224,ip=127.0.0.1,port=41340 is 21935.
+    2024-05-04 22:29:09 connection close fd=210,ip=127.0.0.1,port=41312 is 21918.
+    2024-05-04 22:29:09 connection close fd=207,ip=127.0.0.1,port=41306 is 21912.
+    2024-05-04 22:29:09 connection close fd=227,ip=127.0.0.1,port=41346 is 21937.
+    2024-05-04 22:29:09 connection close fd=220,ip=127.0.0.1,port=41332 is 21924.
+    2024-05-04 22:29:09 connection close fd=216,ip=127.0.0.1,port=41324 is 21927.
+    2024-05-04 22:29:09 connection close fd=204,ip=127.0.0.1,port=41300 is 21911.
+    2024-05-04 22:29:09 connection close fd=230,ip=127.0.0.1,port=41352 is 21940.
+    2024-05-04 22:29:09 connection close fd=221,ip=127.0.0.1,port=41334 is 21925.
+    2024-05-04 22:29:09 connection close fd=226,ip=127.0.0.1,port=41344 is 21923.
+    2024-05-04 22:29:09 connection close fd=223,ip=127.0.0.1,port=41338 is 21926.
+    2024-05-04 22:29:09 connection close fd=219,ip=127.0.0.1,port=41330 is 21929.
+    2024-05-04 22:29:09 connection close fd=208,ip=127.0.0.1,port=41308 is 21909.
+    2024-05-04 22:29:09 connection close fd=218,ip=127.0.0.1,port=41328 is 21930.
+    2024-05-04 22:29:09 connection close fd=212,ip=127.0.0.1,port=41316 is 21914.
+    2024-05-04 22:29:09 connection close fd=217,ip=127.0.0.1,port=41326 is 21928.
+    2024-05-04 22:29:09 connection close fd=222,ip=127.0.0.1,port=41336 is 21933.
+    2024-05-04 22:29:09 connection close fd=225,ip=127.0.0.1,port=41342 is 21934.
+    2024-05-04 22:29:09 connection close fd=228,ip=127.0.0.1,port=41348 is 21915.
+    2024-05-04 22:29:09 connection close fd=213,ip=127.0.0.1,port=41318 is 21917.
+    2024-05-04 22:29:09 connection close fd=231,ip=127.0.0.1,port=41354 is 21939.
+    2024-05-04 22:29:09 connection close fd=211,ip=127.0.0.1,port=41314 is 21920.
+        
