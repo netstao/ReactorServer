@@ -1,5 +1,5 @@
 # ReactorServer
-- 基于Epoll事件，c++11标准实现百万并发Reactor模型。
+- 基于Epoll，c++11标准实现百万并发Reactor模型。
 ## 基本架构图
 ![Reactot架构图](/img/Reactor.png)
 ## 压测
