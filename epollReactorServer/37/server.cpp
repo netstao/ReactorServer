@@ -48,6 +48,7 @@ int main(int argc,char *argv[])
   signal(SIGTERM,Stop);
   signal(SIGINT,Stop);
 
+  //参数对应ip，port，IO线程数，Work线程数
   server = new EchoServer(argv[1],atoi(argv[2]),32,0);
   server->start();
 
