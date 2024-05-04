@@ -24,24 +24,30 @@ void EchoServer::start()
 void EchoServer::HandleNewConnection(spConnection conn) //新连接
 {
     // printf("HandleNewConnection thread is %ld.\n", syscall(SYS_gettid));
-    std::cout<< "new connection come in. fd=%d,ip=%s,port=%d"<<conn->fd()<<conn->ip()<<conn->port() << std::endl;
+    std::cout<< "new connection come in. fd="<<conn->fd()<<",ip="<<conn->ip()<<",port="<<conn->port() << std::endl;
 }
 
 void EchoServer::HandleCloseConnection(spConnection conn) //断开新连接
 {
     //  printf("HandleCloseConnection thread is %ld.\n", syscall(SYS_gettid));
-    std::cout<< "EchoServer connection close. fd=%d,ip=%s,port=%d"<<conn->fd()<<conn->ip()<<conn->port() << std::endl;
+    // std::cout<< "EchoServer connection close. fd=%d,ip=%s,port=%d"<<conn->fd()<<conn->ip()<<conn->port() << std::endl;
+    std::cout<< "EchoServer connection close. fd="<<conn->fd()<<",ip="<<conn->ip()<<",port="<<conn->port() << std::endl;
 }
 
 void EchoServer::HandleErrorConnection(spConnection conn) //错误新连接
 {
-    std::cout<< "EchoServer connection error. fd=%d,ip=%s,port=%d"<<conn->fd()<<conn->ip()<<conn->port() << std::endl;
+
+std::cout<< "HandleErrorConnection error. fd="<<conn->fd()<<",ip="<<conn->ip()<<",port="<<conn->port() << std::endl;
+    
 }
 
 void EchoServer::HandleOnMessage(spConnection conn, std::string &message) //处理客户端的请求报文，在TcpServer类中回调此函数。
 {
     // printf("HandleOnMessage thread is %ld.\n", syscall(SYS_gettid));
-    std::cout<< "EchoServer OnMessage. fd=%d,ip=%s,port=%d"<<conn->fd()<<conn->ip()<<conn->port() << std::endl;
+    // std::cout<< "EchoServer OnMessage."<< std::endl;
+
+    std::cout<< "HandleOnMessage. msg="<< message <<",fd="<<conn->fd()<<",ip="<<conn->ip()<<",port="<<conn->port() << std::endl;
+   
 
     if (workthreadpool_.size()== 0){
         OnMessage(conn, message);
@@ -60,7 +66,7 @@ void EchoServer::OnMessage(spConnection conn, std::string &message)
 
 void EchoServer::HandleSendComplete(spConnection conn)  //数据发送完成后，在TcpServer 回调此函数
 {
-    std::cout<< "EchoServer Send Done. fd=%d,ip=%s,port=%d"<<conn->fd()<<conn->ip()<<conn->port() << std::endl;
+    // std::cout<< "EchoServer Send Done. fd=%d,ip=%s,port=%d"<<conn->fd()<<conn->ip()<<conn->port() << std::endl;
 }
 
 void EchoServer::HandleEpollTimeOut(EventLoop *eloop)  //epoll_wait()超时， 在TcpServer类中回调此函数
