@@ -134,27 +134,39 @@ void Connection::send(const char *data, size_t size)  //发送数据
     if(disconnect_==true) { printf("客户端连接已经断开，send()直接返回\n"); return;}
 
     printf("Connection::send() thread is %ld.\n", syscall(SYS_gettid));
+
+    std::shared_ptr<std::string> message(new std::string(data));
     if (eloop_->isinloopthread())
     {
         printf("Connection::sendinloop, 在IO线程中\n");
-        sendinloop(data, size);
+        sendinloop(message);
     }
     else
     {
         printf("send() 不在io线程中\n");
         printf("queueinloop send after %s, size=%ld\n",data,size);
         // sendinloop(data, size);
-        eloop_->queueinloop(std::bind(&Connection::sendinloop,this,data,size));
+        eloop_->queueinloop(std::bind(&Connection::sendinloop,this,message));
     }
     
 }
 
-void  Connection::sendinloop(const char *data, size_t size) 
+/*void  Connection::sendinloop(const char *data, size_t size) 
 {
     printf("data %s\n",data);
     printf("Connection::sendinloop() thread is %ld.\n", syscall(SYS_gettid));
     outputBuffer_.appendwithhead(data, size);
     std::string message(outputBuffer_.data()+4,size);
+    printf("Connection::sendinloop() data is %s, size is %ld.\n",message.c_str(),outputBuffer_.size());
+    clientchannel_->enablewriteing();  //注册写事件
+}*/
+
+void  Connection::sendinloop(std::shared_ptr<std::string> data) 
+{
+    // printf("data %s\n",data);
+    printf("Connection::sendinloop() thread is %ld.\n", syscall(SYS_gettid));
+    outputBuffer_.appendwithhead(data->data(), data->size());
+    std::string message(outputBuffer_.data()+4,data->size());
     printf("Connection::sendinloop() data is %s, size is %ld.\n",message.c_str(),outputBuffer_.size());
     clientchannel_->enablewriteing();  //注册写事件
 }

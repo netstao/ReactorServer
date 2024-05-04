@@ -139,24 +139,29 @@ void EventLoop::handletimer()
     {
         printf("%ld从事件闹钟时间到了, handletimer each conns_ thread is %ld, fd=", syscall(SYS_gettid),syscall(SYS_gettid));
         time_t now = time(0); //获取当前时间
-        for(auto cc:conns_)
+
+        // if (conns_.size() <=0)
+        // { 
+        //     printf("conns_.size()=%ld\n",conns_.size());
+        //     return;
+        // }
+
+        for(auto cc=conns_.begin();cc!=conns_.end();)
         {
-            if(cc.first <= 0) 
+            if(cc->first <= 0) 
             { 
-                printf("cc.first=0,cc=%d-type=%s-thread=%ld,\n", cc.first, typeid(cc.first).name(),syscall(SYS_gettid));
+                printf("cc->first=0,cc=%d-type=%s-thread=%ld,\n", cc->first, typeid(cc->first).name(),syscall(SYS_gettid));
                 continue;
             }
             
-            printf("cc=%d-type=%s-thread=%ld,", cc.first, typeid(cc.first).name(),syscall(SYS_gettid));
-            if(cc.second->timeout(now, timetvl_))
+            // printf("cc=%d-type=%s-thread=%ld,", cc->first, typeid(cc->first).name(),syscall(SYS_gettid));
+            if(cc->second->timeout(now, timeout_))
             {
-                printf("where timeout cc=%d-type=%s-thread=%ld,", cc.first, typeid(cc.first).name(),syscall(SYS_gettid));
-                {
-                    std::lock_guard<std::mutex> gd(mmutex_);
-                    conns_.erase(cc.first);  //从map中删除 超时的conn
-                }
-                // timercallback_(cc.first);
-            }
+                printf("where timeout cc=%d-type=%s-thread=%ld,", cc->first, typeid(cc->first).name(),syscall(SYS_gettid));
+                timercallback_(cc->first);
+                std::lock_guard<std::mutex> gd(mmutex_);
+                cc = conns_.erase(cc);  //从map中删除 超时的conn
+            } else cc++;
         }
         printf("\n");
     }

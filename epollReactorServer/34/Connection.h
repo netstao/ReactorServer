@@ -56,7 +56,8 @@ public:
 
     void send(const char *data, size_t size);  //任何线程都调用这个函数发送数据
 
-    void sendinloop(const char *data, size_t size);  //发送数据 如果当前线程时IO线程，直接调用这个此函数，如果是工作线程把此函数传给IO线程
+    // void sendinloop(const char *data, size_t size);  //发送数据 如果当前线程时IO线程，直接调用这个此函数，如果是工作线程把此函数传给IO线程
+    void sendinloop(std::shared_ptr<std::string> data);  //智能指针封装发送数据 如果当前线程时IO线程，直接调用这个此函数，如果是工作线程把此函数传给IO线程
 
     bool timeout(time_t now, int sec);  //判断连接时否超时 ，空闲太久
     
