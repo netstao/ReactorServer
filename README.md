@@ -1,6 +1,8 @@
 # ReactorServer
-- 基于Epoll事件，c++实现百万并发Reactor模型。
-# 压测
+- 基于Epoll事件，c++11标准实现百万并发Reactor模型。
+## 基本架构图
+![Reactot架构图](img/Reactot.png)
+## 压测
 - 30个客户端 每个客户端10万请求一共300万请求
 - 本次压测硬件小米笔记本14pro AMD Ryzen 7
 - 修改路径[epollReactorServer/37/](epollReactorServer/37/)
