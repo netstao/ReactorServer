@@ -19,6 +19,7 @@ public:
 
 
     void start();
+    void stop();
     void HandleNewConnection(spConnection conn); //新连接
     void HandleCloseConnection(spConnection conn); //断开新连接
     void HandleErrorConnection(spConnection conn); //错误新连接

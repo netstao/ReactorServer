@@ -33,6 +33,7 @@ public:
     TcpServer(const std::string &ip, const uint16_t port, int threadnum=3);
     ~TcpServer();
     void start(); //启动
+    void stop(); //停止事件循环
     void newconnection(std::unique_ptr<Socket> clientsock); //新连接
     void closeconnection(spConnection conn); //断开新连接
     void errorconnection(spConnection conn); //错误新连接

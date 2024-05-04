@@ -10,7 +10,8 @@
 #include <sys/eventfd.h>
 #include <unistd.h>
 #include <sys/timerfd.h>      // 定时器需要包含这个头文件。
-#include "Connection.h"    
+#include "Connection.h"
+#include <atomic>
 
 #define MaxTimeOut 5;
 
@@ -40,6 +41,8 @@ private:
     std::map<int,spConnection> conns_;          //存放运行在该事件循环上的全部Connection对象
     std::mutex mmutex_;         //保护conns_互斥锁
     std::function<void(int)> timercallback_;    //删除TcpServer中超时的Connection对象，将被设置为TcpServer::removeconn()
+
+    std::atomic_bool stop_;
                      
 
 
@@ -48,6 +51,7 @@ public:
     ~EventLoop();
 
     void run();
+    void stop(); //停止事件循环
     Epoll* ep();
     void updateChannel(Channel* ch);    //把channel添加、更新到红黑树上，channel中有fd，也有需要监视的事件
     void removeChannel(Channel* ch);    //从红黑树上删除channel

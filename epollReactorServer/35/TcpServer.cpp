@@ -45,6 +45,23 @@ void TcpServer::start()
     maineloop_->run();
 }
 
+ void TcpServer::stop()
+ {
+    //停止主从事件循环
+    //停止IO线程
+    maineloop_->stop();
+    printf("停止主事件循环\n");
+    for(int i=0;i<threadnum_;i++)
+    {
+        subeloops_[i]->stop();
+    }
+    printf("停止从事件循环\n");
+
+    //停止io线程池
+    Threadepools_.stop();
+    printf("停止IO线程池\n");
+ }
+
 //新连接
  void TcpServer::newconnection(std::unique_ptr<Socket> clientsock) 
  {

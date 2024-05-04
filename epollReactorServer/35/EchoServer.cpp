@@ -21,6 +21,17 @@ void EchoServer::start()
     tcpserver_.start();
 }
 
+void EchoServer::stop()
+{
+    //停止工作线程
+    workthreadpool_.stop();
+    printf("work 线程已停止.\n");
+
+    tcpserver_.stop();
+    // printf("tcpserver 线程已停止.\n");
+
+}
+
 void EchoServer::HandleNewConnection(spConnection conn) //新连接
 {
     // printf("HandleNewConnection thread is %ld.\n", syscall(SYS_gettid));

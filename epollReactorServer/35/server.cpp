@@ -20,41 +20,36 @@
 #include "EventLoop.h"
 */
 #include "EchoServer.h"
+#include <signal.h>
 
+ //设置2和15的信号 ， 在信号处理函数中停止主从事件循环 3程序主动退出
+
+EchoServer *server;
+
+void Stop(int sig)
+{
+  printf("sig=%d\n",sig);
+  printf("server stoping...\n");
+  server->stop();
+  delete server;
+  printf("delete server.\n");
+  exit(0);
+}
 
 int main(int argc,char *argv[])
 {
-  // printf("sizeof channel=%ld\n", sizeof(Channel));
-    if (argc != 3) 
-    { 
-        printf("usage: ./tcpepoll ip port\n"); 
-        printf("example: ./tcpepoll 192.168.150.128 5085\n\n"); 
-        return -1; 
-    }
+  if (argc != 3) 
+  { 
+      printf("usage: ./tcpepoll ip port\n"); 
+      printf("example: ./tcpepoll 192.168.150.128 5085\n\n"); 
+      return -1; 
+  }
 
-    /*
-    Socket servsock(createnonblocking());
-    InetAddress servaddr(argv[1],atoi(argv[2]));
-    servsock.setreuseaddr(true);
-    servsock.setkeepalive(true);
-    servsock.setreuseport(true);
-    servsock.settcpnodelay(true);
-    servsock.bind(servaddr);
-    servsock.listen();
+  signal(SIGTERM,Stop);
+  signal(SIGINT,Stop);
 
-   EventLoop eloop;
-   Channel *servchannel = new Channel(&eloop, servsock.fd());
-
-   servchannel->setreadcallback(std::bind(&Channel::newconnection, servchannel,&servsock));
-   servchannel->enablereading();
-   */
-  //  TcpServer tcpserver(argv[1],atoi(argv[2]));
-  //  tcpserver.start();
-   // eloop.run();
-  
-  EchoServer echoserver(argv[1],atoi(argv[2]),3,2);
-
-  echoserver.start();
+  server = new EchoServer(argv[1],atoi(argv[2]),3,2);
+  server->start();
 
 
   return 0;

@@ -18,6 +18,7 @@ int createtimerfd(int sec=10)
 
 EventLoop::EventLoop(bool mainloop, int timetvl, int timeout)
           :ep_(new Epoll),wakeupfd_(eventfd(0,EFD_NONBLOCK)),
+          stop_(false),
           mainloop_(mainloop),
           wakechannel_(new Channel(this,wakeupfd_)),
           timerfd_(createtimerfd(timetvl)),timerchannel_(new Channel(this,timerfd_)),
@@ -36,11 +37,17 @@ EventLoop::~EventLoop()
     // delete ep_;
 }
 
+void EventLoop::stop()
+{
+    stop_=true;
+    wakeup();
+}
+
 void EventLoop::run()
 {
     threadid_ = syscall(SYS_gettid);
 
-    while (true)        // 事件循环。
+    while (stop_==false)        // 事件循环。
     {
        std::vector <Channel *> channels = ep_->loop(10*1000); //等待事件发生 成功发生事件 push到vector容器的尾部
        //为空时是因为执行了ep_->loop中的epoll_wait()超时了 返回了空的channel
