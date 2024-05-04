@@ -1,6 +1,6 @@
 
 #include "Connection.h"
-#include "HttpParser.h"
+// #include "HttpParser.h"
 
 Connection::Connection(EventLoop *eloop, std::unique_ptr<Socket> clientsock)
            :eloop_(eloop),clientsock_(std::move(clientsock)),disconnect_(false),
@@ -101,9 +101,7 @@ void Connection::onmessage()  //处理对端发过来的消息
             {
                 if (inputBuffer_.pickmessage(message) ==false) break;
                 lastatime_ = Timestamp::now();   //获取时间戳
-
                 // std::cout << "lastatime=" << lastatime_.tostring() << std::endl;
-
                 onmessagecallback_(shared_from_this(), message);  //回调TcpServer类中 onmessage
            
             }

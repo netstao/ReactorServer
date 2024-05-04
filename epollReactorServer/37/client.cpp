@@ -35,9 +35,9 @@ int main(int argc, char *argv[])
     }
 
     printf("connect ok.\n");
-    // printf("开始时间：%d",time(0));
+    printf("开始时间：%ld\n",time(0));
 
-    for (int ii=0;ii<10;ii++)
+    for (int ii=0;ii<100000;ii++)
     {
         // 从命令行输入内容。
 
@@ -69,9 +69,9 @@ int main(int argc, char *argv[])
             printf("read() failed.\n");  close(sockfd);  return -1;
         }
 
-        printf("recv:%s\n",buf);
-        sleep(1);
+        // printf("recv:%s\n",buf);
+        // sleep(1);
     }
     
-    // printf("结束时间：%d",time(0));
+    printf("结束时间：%ld\n",time(0));
 } 

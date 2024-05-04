@@ -165,7 +165,6 @@ void EventLoop::handletimer()
                 cc = conns_.erase(cc);  //从map中删除 超时的conn
             } else cc++;
         }
-        printf("\n");
     }
    
 }
