@@ -7,6 +7,8 @@
 - 本次压测硬件小米笔记本14pro AMD Ryzen 7
 - 修改路径[epollReactorServer/37/](epollReactorServer/37/)
 - IO线程数的修改[epollReactorServer/server.cpp](epollReactorServer/37/server.cpp)
+- ./btest.sh每个客户端连接循环10万次写和读第10万个读完成就直接退出进程
+- connectionClose-NewConnection的时间差就是完成报文读写过程花费的时间
 ## 启动参数
     //参数分别对应ip,port,IO线程数,Work线程数
     server = new EchoServer(argv[1],atoi(argv[2]),32,0);  
@@ -144,7 +146,7 @@
     2024-05-04 22:13:35 connection close fd=134,ip=127.0.0.1,port=41266 is 1522.
     2024-05-04 22:13:35 connection close fd=130,ip=127.0.0.1,port=41258 is 1505.
 ## 第三次压测 虚拟机WSL启动64个IO线程 16核心8G
-    300万请求 对比32个IO线程并没有得到提升 可以得出结论 IO线程线程数最好是CPU个数*2
+    300万请求 对比32个IO线程并没有得到明显的提升 可以得出结论 IO线程线程数最好是CPU个数*2
     server = new EchoServer(argv[1],atoi(argv[2]),32,0);  //根目录server.cpp
 
     2024-05-04 22:29:05 new connection fd=203,ip=127.0.0.1,port=41298, thread id is 21896.
