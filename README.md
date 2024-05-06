@@ -1,5 +1,5 @@
 # ReactorServer
-- 基于Epoll，c++11标准实现百万并发Reactor模型。
+- 基于Epoll，c++11标准实现百万并发Reactor模型, 智能指针，线程，移动语义，原子语义等。
 ## 基本架构图
 ![Reactot架构图](/img/Reactor.png)
 ## 压测
@@ -16,7 +16,14 @@
     ./server 127.0.0.1 9009  #服务端启动 IO线程线程数最好是CPU个数*2
 
     ./btest.sh  #30个客户端 每个客户端10万请求300万请求
-    
+
+## 结论 16核心8G 300万请求
+- 启动8个IO线程  平均8.6秒内完成300万 平均每秒处理33.33万报文
+- 启动16个IO线程 平均2.9秒内完成300万 平均每秒处理103.44万报文 相较8个IO线程提升三倍
+- 启动64个IO线程 平均3.8秒内完成300万 平均每秒处理78.94万报文  对比32个IO线程并没有得到明显的提升(每个核的竞争锁更多了) 可以得出结论 IO线程线程数最好是CPU个数*2
+- 启动16个IO线程 平均2.3秒内完成300万 平均每秒处理130.43万报文 开启-O3编译优化，得到600毫秒左右的提升，报文每秒提升27万左右,
+- "一代又一代的语言想取代C++,代代C++教它们做人"
+    ![压测对比图](/img/b.png)
 ## 第一次压测结果  虚拟机WSL 启动8个IO线程 16核心8G
     300万请求 9秒内完成300万 平均每秒处理33.33万报文
     
@@ -209,4 +216,68 @@
     2024-05-04 22:29:09 connection close fd=213,ip=127.0.0.1,port=41318 is 21917.
     2024-05-04 22:29:09 connection close fd=231,ip=127.0.0.1,port=41354 is 21939.
     2024-05-04 22:29:09 connection close fd=211,ip=127.0.0.1,port=41314 is 21920.
+
+## 第四次压测 虚拟机WSL启动32个IO线程 16核8G 开启C++编译 -O3优化
+    //300万请求 平均2.3秒内完成300万 得到600毫秒左右的提升 平均每秒处理130.43万报文 报文提升每秒27万左右 
+
+    2024-05-06 11:59:46 new connection fd=107,ip=127.0.0.1,port=38424, thread id is 5990.
+    2024-05-06 11:59:46 new connection fd=108,ip=127.0.0.1,port=38426, thread id is 5990.
+    2024-05-06 11:59:46 new connection fd=109,ip=127.0.0.1,port=38428, thread id is 5990.
+    2024-05-06 11:59:46 new connection fd=110,ip=127.0.0.1,port=38430, thread id is 5990.
+    2024-05-06 11:59:46 new connection fd=111,ip=127.0.0.1,port=38432, thread id is 5990.
+    2024-05-06 11:59:46 new connection fd=112,ip=127.0.0.1,port=38434, thread id is 5990.
+    2024-05-06 11:59:46 new connection fd=113,ip=127.0.0.1,port=38436, thread id is 5990.
+    2024-05-06 11:59:46 new connection fd=114,ip=127.0.0.1,port=38438, thread id is 5990.
+    2024-05-06 11:59:46 new connection fd=115,ip=127.0.0.1,port=38440, thread id is 5990.
+    2024-05-06 11:59:46 new connection fd=116,ip=127.0.0.1,port=38442, thread id is 5990.
+    2024-05-06 11:59:46 new connection fd=117,ip=127.0.0.1,port=38444, thread id is 5990.
+    2024-05-06 11:59:46 new connection fd=118,ip=127.0.0.1,port=38446, thread id is 5990.
+    2024-05-06 11:59:46 new connection fd=119,ip=127.0.0.1,port=38448, thread id is 5990.
+    2024-05-06 11:59:46 new connection fd=120,ip=127.0.0.1,port=38452, thread id is 5990.
+    2024-05-06 11:59:46 new connection fd=121,ip=127.0.0.1,port=38450, thread id is 5990.
+    2024-05-06 11:59:46 new connection fd=122,ip=127.0.0.1,port=38454, thread id is 5990.
+    2024-05-06 11:59:46 new connection fd=123,ip=127.0.0.1,port=38456, thread id is 5990.
+    2024-05-06 11:59:46 new connection fd=124,ip=127.0.0.1,port=38458, thread id is 5990.
+    2024-05-06 11:59:46 new connection fd=125,ip=127.0.0.1,port=38460, thread id is 5990.
+    2024-05-06 11:59:46 new connection fd=126,ip=127.0.0.1,port=38462, thread id is 5990.
+    2024-05-06 11:59:46 new connection fd=127,ip=127.0.0.1,port=38464, thread id is 5990.
+    2024-05-06 11:59:47 new connection fd=128,ip=127.0.0.1,port=38466, thread id is 5990.
+    2024-05-06 11:59:47 new connection fd=129,ip=127.0.0.1,port=38468, thread id is 5990.
+    2024-05-06 11:59:47 new connection fd=130,ip=127.0.0.1,port=38470, thread id is 5990.
+    2024-05-06 11:59:47 new connection fd=131,ip=127.0.0.1,port=38472, thread id is 5990.
+    2024-05-06 11:59:47 new connection fd=132,ip=127.0.0.1,port=38474, thread id is 5990.
+    2024-05-06 11:59:47 new connection fd=133,ip=127.0.0.1,port=38476, thread id is 5990.
+    2024-05-06 11:59:47 new connection fd=134,ip=127.0.0.1,port=38478, thread id is 5990.
+    2024-05-06 11:59:47 new connection fd=135,ip=127.0.0.1,port=38480, thread id is 5990.
+    2024-05-06 11:59:47 new connection fd=136,ip=127.0.0.1,port=38482, thread id is 5990.
+    2024-05-06 11:59:49 connection close fd=116,ip=127.0.0.1,port=38442 is 6013.
+    2024-05-06 11:59:49 connection close fd=120,ip=127.0.0.1,port=38452 is 6017.
+    2024-05-06 11:59:49 connection close fd=121,ip=127.0.0.1,port=38450 is 6010.
+    2024-05-06 11:59:49 connection close fd=129,ip=127.0.0.1,port=38468 is 6022.
+    2024-05-06 11:59:49 connection close fd=133,ip=127.0.0.1,port=38476 is 5995.
+    2024-05-06 11:59:49 connection close fd=130,ip=127.0.0.1,port=38470 is 5992.
+    2024-05-06 11:59:49 connection close fd=111,ip=127.0.0.1,port=38432 is 6004.
+    2024-05-06 11:59:49 connection close fd=134,ip=127.0.0.1,port=38478 is 6002.
+    2024-05-06 11:59:49 connection close fd=110,ip=127.0.0.1,port=38430 is 6005.
+    2024-05-06 11:59:49 connection close fd=119,ip=127.0.0.1,port=38448 is 6015.
+    2024-05-06 11:59:49 connection close fd=123,ip=127.0.0.1,port=38456 is 6020.
+    2024-05-06 11:59:49 connection close fd=112,ip=127.0.0.1,port=38434 is 6007.
+    2024-05-06 11:59:49 connection close fd=125,ip=127.0.0.1,port=38460 is 6016.
+    2024-05-06 11:59:49 connection close fd=128,ip=127.0.0.1,port=38466 is 5991.
+    2024-05-06 11:59:49 connection close fd=115,ip=127.0.0.1,port=38440 is 6012.
+    2024-05-06 11:59:49 connection close fd=113,ip=127.0.0.1,port=38436 is 6008.
+    2024-05-06 11:59:49 connection close fd=127,ip=127.0.0.1,port=38464 is 5996.
+    2024-05-06 11:59:49 connection close fd=122,ip=127.0.0.1,port=38454 is 6018.
+    2024-05-06 11:59:49 connection close fd=118,ip=127.0.0.1,port=38446 is 6009.
+    2024-05-06 11:59:50 connection close fd=136,ip=127.0.0.1,port=38482 is 6000.
+    2024-05-06 11:59:50 connection close fd=131,ip=127.0.0.1,port=38472 is 5993.
+    2024-05-06 11:59:50 connection close fd=132,ip=127.0.0.1,port=38474 is 5994.
+    2024-05-06 11:59:50 connection close fd=109,ip=127.0.0.1,port=38428 is 6006.
+    2024-05-06 11:59:50 connection close fd=117,ip=127.0.0.1,port=38444 is 6014.
+    2024-05-06 11:59:50 connection close fd=124,ip=127.0.0.1,port=38458 is 6021.
+    2024-05-06 11:59:50 connection close fd=114,ip=127.0.0.1,port=38438 is 6011.
+    2024-05-06 11:59:50 connection close fd=126,ip=127.0.0.1,port=38462 is 6019.
+    2024-05-06 11:59:50 connection close fd=135,ip=127.0.0.1,port=38480 is 5997.
+    2024-05-06 11:59:50 connection close fd=108,ip=127.0.0.1,port=38426 is 6003.
+    2024-05-06 11:59:50 connection close fd=107,ip=127.0.0.1,port=38424 is 6001.
         
