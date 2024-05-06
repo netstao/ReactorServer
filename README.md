@@ -7,7 +7,7 @@
 - 本次压测硬件小米笔记本14pro AMD Ryzen 7
 - 修改路径[epollReactorServer/37/](epollReactorServer/37/)
 - IO线程数的修改[epollReactorServer/server.cpp](epollReactorServer/37/server.cpp)
-- ./btest.sh每个客户端连接循环10万次写和读第10万个读完成就直接退出进程
+- ./btest.sh每个客户端连接后，循环10万次写和读,第10万个读完成就直接退出进程
 - connectionClose-NewConnection的时间差就是完成报文读写过程花费的时间
 ## 启动参数
     //参数分别对应ip,port,IO线程数,Work线程数
